@@ -1,6 +1,6 @@
 # Electricity Price Forecasting on the Day-Ahead market using Machine Learning
 
-This repository contains the code necessary to reproduce the experiments of the paper. Please cite us using. 
+This repository contains the code necessary to reproduce the experiments of our [paper](https://www.sciencedirect.com/science/article/abs/pii/S0306261922002057). 
 
 ## Installation
 
