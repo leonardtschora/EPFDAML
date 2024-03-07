@@ -142,6 +142,7 @@ def parallelize(n_cpus, model, param_list, X, y, seeds=None,
     delayed(to_parallelize)(
         i, model, param_list, X, y, Xv=Xv, yv=yv, seeds=seeds,
         validation_mode=validation_mode) for i in range(n_combis))
+    # results are a list of tuples (res, times)
     return results
 
 def results_to_df(results, param_list, seeds=None, map_dict={}, cv=1, n_cpus=1):

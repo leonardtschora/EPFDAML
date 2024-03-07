@@ -79,11 +79,19 @@ def run(**kwargs):
                 total_time = run_recalibrate(name, dataset, model, country, n_cpus,
                                              start_rec, stop_rec, n_shap, n_val,
                                              base_dataset_name, calibration_window)
-                recalibration_times = recalibration_times.append(
+                recalibration_times = pandas.concat([
+                    pandas.DataFrame(
                     {"country" : country,
-                     "times" : total_time,
-                     "model" : get_model_string(model)},
-                    ignore_index=True)
+                    "model" : get_model_string(model),
+                    "times" : total_time}, index=[0]),
+                    recalibration_times], ignore_index=True)
+
+                # recalibration_times = recalibration_times.append(
+                #     {"country" : country,
+                #      "times" : total_time,
+                #      "model" : get_model_string(model)},
+                #     ignore_index=True)
+
                 start = start - (time.time() - pause)
 
     recalibration_times.to_csv("recalibrattion_times" + str(time.time()) + ".csv")
@@ -107,6 +115,9 @@ def run_grid_search(name, dataset, model, country, base_dataset_name, fast,
     param_list, seeds = ps.get_param_list_and_seeds(
         search_space, n_combis, country,
         model_wrapper=model_wrapper, restart=restart)
+    # param list is a list of dictionaries with the parameters to be tested
+    # seeds is a list of seeds to be used for each parameter combination
+    # n_combis is the number of parameter combinations to be tested
     results = ps.parallelize(n_cpus, model_wrapper, param_list, X, y,
                              seeds=seeds, validation_mode = validation_mode,
                              external_spliter = external_spliter)
@@ -114,7 +125,8 @@ def run_grid_search(name, dataset, model, country, base_dataset_name, fast,
                           map_dict=model_wrapper.map_dict(), cv=1)
     if not restart:
         # Dont use load results here because it will parse string as python objects!
-        df = pandas.read_csv(model_wrapper.results_path()).append(df)
+        # df = pandas.read_csv(model_wrapper.results_path()).append(df)
+        df = pandas.concat([pandas.read_csv(model_wrapper.results_path()), df])
     df.to_csv(model_wrapper.results_path(), index=False)
     return model_wrapper
 
@@ -167,6 +179,7 @@ def run_recalibrate(name, dataset, model, country, n_cpus, start, stop, n_shap,
 def get_date_cols(cc, version):
     if version == "":
         return [str(get_country_code(cc)) + "_day_of_week"]
+    # TODO : ajouter pour FRDEBE
     if cc == "FRDEBE": cc = "FR"
     return [f'{cc}_day_1', f'{cc}_day_2', f'{cc}_day_of_week_1',            
             f'{cc}_day_of_week_2', f'{cc}_week_1', f'{cc}_week_2',
@@ -175,10 +188,9 @@ def get_date_cols(cc, version):
 def create_mw(country, dataset, model, name, spliter=None):
     dataset_ = f"EPF{dataset}_" + str(country)
     labels = get_labels(country, dataset)
-
     date_col = get_date_cols(country, dataset)
     data_cols = get_col_names(country, dataset)
-    cc = get_country_code(country)            
+    cc = get_country_code(country)           
     name_ = get_model_string(model) + "_" + name
 
     return create_model_wrapper(
@@ -216,9 +228,12 @@ def get_search_space(model_wrapper, n, country, stop_after=-1,
     return base_model_wrapper.load_results()
     
 def get_labels(country, dataset):
+    # TODO : modifier pour FRDE, DEBE, FRBE
     if dataset not in ("FRBL8", "FRBL10", "FRBL11"):
         if country == "FRDEBE":
             labels = [f"FR_price_{i}" for i in range(24)] + [f"DE_price_{i}" for i in range(24)] + [f"BE_price_{i}" for i in range(24)]
+        # elif country == "FRDE":
+            # TODO : ajouter les labels pour FRDE
         else: labels = [f"{get_country_code(country)}_price_{i}" for i in range(24)]
     else:
         labels = [f"{get_country_code(country)}_price", ]
@@ -241,9 +256,11 @@ def get_col_names_(country):
         cols = ("System load forecast", "Zonal COMED load foecast")
     if country == "FRDEBE":
         cols = get_col_names_("FR") + get_col_names_("DE") + get_col_names_("BE")
+    # TODO : ajouter pour FRDE, DEBE, etc.
     return cols
 
 def get_country_code(country):
+    # TODO : ajouter les codes pour FRDE, DEBE, FRBE
     if country == "FR":
         code = "FR"
     if country == "FRDEBE":

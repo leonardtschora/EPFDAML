@@ -1,3 +1,7 @@
+import os, sys
+# Change this if you need to
+os.environ["EPFDAML"] = os.curdir
+sys.path.append(os.environ["EPFDAML"])
 from work.analysis.evaluate import mae, smape, mape, rmse, rmae, dae, cmap
 from work.models.model_wrapper import ModelWrapper
 from work.models.MLPWrapper import MLPWrapper
@@ -12,11 +16,11 @@ import work.analysis.metrics_utils
 import work.analysis.evaluate
 mu = work.analysis.metrics_utils
 
-datasets = ("validation", "test", "test_recalibrated")
-versions = ("", "2", "3")
-countries = ("FR", "DE", "BE")
-models = (MLPWrapper, RFR, ChainSVR, MultiSVR, LAGOWrapper)
-metrics = (smape, mae, dae, rmae)
+datasets = ["validation", "test"]
+versions = ["2"]
+countries = ["FR"]#, "DE", "BE")
+models = [MLPWrapper]#, RFR, ChainSVR, MultiSVR, LAGOWrapper)
+metrics = [smape, mae, dae, rmae]
 lago_params = {"LEAR" : (56, 84, 1092, 1456), "DNN" : (1, 2, 3, 4)}
 
 predictions, model_wrappers = mu.load_forecasts(
@@ -26,6 +30,7 @@ results = mu.compute_metrics(predictions, model_wrappers, metrics, real_prices,
                              naive_forecasts)
 dms = mu.compute_pvalues(predictions, model_wrappers, real_prices)
 
+"""
 # All version individually
 version = ""
 res_val = mu.plot_scaled_metrics(results, model_wrappers, "validation",
@@ -78,10 +83,8 @@ mu.plot_summary(res_test_recalibrated, res_test_recalibrated_2,
 
 best_metrics =  mu.plot_best_metrics(res_test, res_test_recalibrated, countries,
                                      metrics, model_wrappers, nmw, columns, index)
-
+"""
 ## PValues
-
-
 version = "2"
 dataset = "test_recalibrated"
 versions = {"" : "BASE", "2" : "ENRICHED"}

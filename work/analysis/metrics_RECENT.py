@@ -1,3 +1,8 @@
+import os, sys
+# Change this if you need to
+os.environ["EPFDAML"] = os.curdir
+sys.path.append(os.environ["EPFDAML"])
+
 from work.analysis.evaluate import mae, smape, mape, rmse, rmae, dae, cmap
 from work.models.model_wrapper import ModelWrapper
 from work.models.MLPWrapper import MLPWrapper
@@ -12,13 +17,14 @@ from work.models.Splitter import MySplitter
 
 import work.analysis.metrics_utils
 import work.analysis.evaluate
+
 mu = work.analysis.metrics_utils
 
-datasets = ("validation", "test", "test_recalibrated")
-versions = ("3", )
-countries = ("FR", "DE", "BE")
-models = (LeNetWrapper, MLPWrapper, ChainSVR, MultiSVR, RFR)
-metrics = (smape, mae, dae, rmae)
+datasets = ["validation", "test", "test_recalibrated"]
+versions = ["2"]
+countries = ["FR"] #, "DE", "BE")
+models = [MLPWrapper]# , ChainSVR, MultiSVR, RFR) #LeNetWrapper,
+metrics = [smape, mae, dae, rmae]
 
 predictions, model_wrappers = mu.load_forecasts(
     datasets, countries, models, versions, {})
@@ -28,7 +34,7 @@ results = mu.compute_metrics(predictions, model_wrappers, metrics, real_prices,
 dms = mu.compute_pvalues(predictions, model_wrappers, real_prices)
 
 # All version individually
-version = "3"
+version = "2"
 res_val = mu.plot_scaled_metrics(results, model_wrappers, "validation",
                                  version, metrics)
 res_test = mu.plot_scaled_metrics(results, model_wrappers, "test",

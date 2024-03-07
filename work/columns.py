@@ -40,10 +40,12 @@ def labels_and_pos(model_wrapper, version, country, for_plot=True):
         prfx, lags, feature_labels, feature_names_ordered, i_init = label_and_pos_v1(cc, country, sort_func, order_concat)
     elif ((version == "2") and (country != "FRDEBE")):
         prfx, lags, feature_labels, feature_names_ordered, i_init = label_and_pos_v2(cc, country, sort_func, order_concat)
+    # TODO : add and (country=='FRBE')
     elif ((version == "2") and (country == "FRDEBE")):
         prfx, lags, feature_labels, feature_names_ordered, i_init = label_and_pos_v3(cc, country, sort_func, order_concat)
     elif ((version == "3") and (country != "FRDEBE")):
         prfx, lags, feature_labels, feature_names_ordered, i_init = label_and_pos_v4(cc, country, sort_func, order_concat)
+    
     else:
         return feature_names, None
 

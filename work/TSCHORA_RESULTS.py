@@ -1,9 +1,10 @@
-import pandas, copy, os, tensorflow as tf
+import pandas, copy, os, sys, tensorflow as tf
 # Skip this line if your gpu is set up
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
 # Change this if you need to
 os.environ["EPFDAML"] = os.curdir
+sys.path.append(os.environ["EPFDAML"])
 
 # import models
 from work.models.Feature import Naive
@@ -23,8 +24,12 @@ First, select 1 or more TASK to run :
 Then, some general parameters have to be defined :
     name : a string that will be appended to the model's files (forecast, results, etc)
     dataset : a string indicating the dataset to load. Must of ("", "2" or "Frites"). Dataset "" will use the exact same datasets as in the epftoolbox. Dataset "2" is the enriched dataset on the same period. Dataset "Frites" is the datasets on the recent period.
-    base_dataset_name : This is used for loading results from previous dataset. For instance, we used base_dataset_name = "2" and dataset = "Frites" for using the best found configuration on the first period for recalibrating the second period. Enter the same name for disabling configuration loading.
-    "n_val" : Interger idnicating the number of validation samples to use.
+    "EPF{dataset}_" + str(country)
+    base_dataset_name : This is used for loading results from previous dataset. 
+    For instance, we used base_dataset_name = "2" and dataset = "Frites"
+    for using the best found configuration on the first period for recalibrating the second period.
+    Enter the same name for disabling configuration loading.
+    "n_val" : Interger indicating the number of validation samples to use.
     "models" : A list of model wrappers to evaluate
     "countries" : the region to evaluate
 
@@ -44,6 +49,7 @@ The RECALIBRATION Parameters are the following :
     "calibration window" : interger. The length of the train set used during recalibration.
 """
 
+
 kwargs = {
     # TASKS
     "GRID_SEARCH" : True,
@@ -52,11 +58,11 @@ kwargs = {
 
     # GENERAL PARAMS
     "name" : "TSCHORA",
-    "dataset" : "3",
-    "base_dataset_name" : "3",
+    "dataset" : "2",
+    "base_dataset_name" : "2",
     "n_val" : 362,
-    "models" : [LeNetWrapper, MLPWrapper, MultiSVR, ChainSVR, RFR],    
-    "countries" : ["FR", "DE", "BE"],
+    "models" : [MLPWrapper], # [LeNetWrapper, MLPWrapper, MultiSVR, ChainSVR, RFR],    
+    "countries" : ["FR"], # "DE", "BE"],
     
     # GRID SEARCH PARAMS
     "fast" : True,
@@ -74,6 +80,7 @@ kwargs = {
 }
 run(**kwargs)
 
+"""
 # The used parameters were:
 
 # PERIOD T1 : BASE DATASETS
@@ -107,12 +114,13 @@ kwargs = {
 }
 run(**kwargs)
 
+
 # PERIOD T1 : ENRICHED DATASETS
 kwargs = {
     # TASKS
     "GRID_SEARCH" : True,
     "LOAD_AND_TEST" : True,
-    "RECALIBRATE" : True,   
+    "RECALIBRATE" : False,   
 
     # GENERAL PARAMS
     "name" : "TSCHORA",
@@ -120,10 +128,10 @@ kwargs = {
     "base_dataset_name" : "2",
     "n_val" : 362,
     "models" : [LeNetWrapper, MLPWrapper, MultiSVR, ChainSVR, RFR],    
-    "countries" : ["FR", "DE", "BE", "FRDEBE"],
+    "countries" : ["FR"],# , "DE", "BE", "FRDEBE"],
     
     # GRID SEARCH PARAMS
-    "fast" : False,
+    "fast" : True,
     "n_combis" : 200,
     "restart" : True,
     "n_rep" : 20,
@@ -137,6 +145,7 @@ kwargs = {
     "calibration_window" : 4 * 362,
 }
 run(**kwargs)
+
 
 # PERIOD T2 : we use the configurations of T1 and thus base_dataset_name=2
 kwargs = {
@@ -167,4 +176,5 @@ kwargs = {
     "stop" : 725,
     "calibration_window" : 1456,
 }
-run(**kwargs)
+# run(**kwargs)
+"""
