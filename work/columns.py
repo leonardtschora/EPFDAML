@@ -38,12 +38,14 @@ def labels_and_pos(model_wrapper, version, country, for_plot=True):
     # Set order for better display
     if version == "":
         prfx, lags, feature_labels, feature_names_ordered, i_init = label_and_pos_v1(cc, country, sort_func, order_concat)
-    elif ((version == "2") and (country != "FRDEBE")):
+    elif ((version == "2") and (country != "FRDEBE") and (country != "FRDE")):
         prfx, lags, feature_labels, feature_names_ordered, i_init = label_and_pos_v2(cc, country, sort_func, order_concat)
-    # TODO : add and (country=='FRBE')
+    # TODO : add and (country=='FRBE') and create new function label_and_pos_v?
     elif ((version == "2") and (country == "FRDEBE")):
         prfx, lags, feature_labels, feature_names_ordered, i_init = label_and_pos_v3(cc, country, sort_func, order_concat)
-    elif ((version == "3") and (country != "FRDEBE")):
+    elif ((version == "2") and (country == "FRDE")):
+        prfx, lags, feature_labels, feature_names_ordered, i_init = label_and_pos_vFRDE(cc, country, sort_func, order_concat)
+    elif ((version == "3") and (country != "FRDEBE") and (country != "FRDE")):
         prfx, lags, feature_labels, feature_names_ordered, i_init = label_and_pos_v4(cc, country, sort_func, order_concat)
     
     else:
@@ -138,6 +140,36 @@ def label_and_pos_v3(cc, country, sort_func, order_concat):
             "FR_price" : [f"_past_{i}" for i in sort_func((7, 3, 2, 1))],
             "DE_price" : [f"_past_{i}" for i in sort_func((7, 3, 2, 1))],
             "BE_price" : [f"_past_{i}" for i in sort_func((7, 3, 2, 1))],
+            "NL_price" : [f"_past_{i}" for i in sort_func((7, 1))],
+            "CH_price" : order_concat(
+                [f"_past_{i}" for i in sort_func((7, 1))], [""]),
+            "ES_price" : [f"_past_{i}" for i in sort_func((7, 1))]}
+        cc = "FR"
+        feature_names_ordered = [
+            f'{cc}_day_1', f'{cc}_day_2', f'{cc}_day_of_week_1',
+            f'{cc}_day_of_week_2', f'{cc}_week_1', f'{cc}_week_2',
+            f'{cc}_month_1', f'{cc}_month_2']
+        feature_labels = ["DATE"]
+        i_init = 8
+        return prfx, lags, feature_labels, feature_names_ordered, i_init
+
+def label_and_pos_vFRDE(cc, country, sort_func, order_concat):
+        prfx = ["FR_energy", "FR_Generation forecast", "FR_price",
+                "DE_price", "DE_Ampirion Load Forecast", "DE_PV+Wind Forecast",
+                "BE_price", "NL_price", "CH_price", "ES_price"]
+        lags = {
+            "FR_energy" : order_concat(
+                [f"_past_{i}" for i in sort_func((7, 1))], [""]),
+            "FR_Generation forecast" : order_concat(
+                [f"_past_{i}" for i in sort_func((7, 1))], [""]),
+            "DE_Ampirion Load Forecast" : order_concat(
+                [f"_past_{i}" for i in sort_func((7, 1))], [""]),
+            "DE_PV+Wind Forecast" : order_concat(
+                [f"_past_{i}" for i in sort_func((7, 1))], [""]),
+            "FR_price" : [f"_past_{i}" for i in sort_func((7, 3, 2, 1))],
+            "DE_price" : [f"_past_{i}" for i in sort_func((7, 3, 2, 1))],
+            # TODO mettre le pays manquant seulement (7, 1)
+            "BE_price" : [f"_past_{i}" for i in sort_func((7, 1))],
             "NL_price" : [f"_past_{i}" for i in sort_func((7, 1))],
             "CH_price" : order_concat(
                 [f"_past_{i}" for i in sort_func((7, 1))], [""]),

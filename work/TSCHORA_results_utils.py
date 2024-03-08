@@ -180,7 +180,7 @@ def get_date_cols(cc, version):
     if version == "":
         return [str(get_country_code(cc)) + "_day_of_week"]
     # TODO : ajouter pour FRDEBE
-    if cc == "FRDEBE": cc = "FR"
+    if (cc == "FRDEBE") or (cc=="FRDE"): cc = "FR"
     return [f'{cc}_day_1', f'{cc}_day_2', f'{cc}_day_of_week_1',            
             f'{cc}_day_of_week_2', f'{cc}_week_1', f'{cc}_week_2',
             f'{cc}_month_1', f'{cc}_month_2']
@@ -232,8 +232,8 @@ def get_labels(country, dataset):
     if dataset not in ("FRBL8", "FRBL10", "FRBL11"):
         if country == "FRDEBE":
             labels = [f"FR_price_{i}" for i in range(24)] + [f"DE_price_{i}" for i in range(24)] + [f"BE_price_{i}" for i in range(24)]
-        # elif country == "FRDE":
-            # TODO : ajouter les labels pour FRDE
+        elif country == "FRDE":
+            labels = [f"FR_price_{i}" for i in range(24)] + [f"DE_price_{i}" for i in range(24)]
         else: labels = [f"{get_country_code(country)}_price_{i}" for i in range(24)]
     else:
         labels = [f"{get_country_code(country)}_price", ]
@@ -257,6 +257,8 @@ def get_col_names_(country):
     if country == "FRDEBE":
         cols = get_col_names_("FR") + get_col_names_("DE") + get_col_names_("BE")
     # TODO : ajouter pour FRDE, DEBE, etc.
+    if country == "FRDE" :
+        cols = get_col_names_("FR") + get_col_names_("DE") 
     return cols
 
 def get_country_code(country):
@@ -264,7 +266,9 @@ def get_country_code(country):
     if country == "FR":
         code = "FR"
     if country == "FRDEBE":
-        code = "FRDEBE"        
+        code = "FRDEBE"   
+    if country == "FRDE":
+        code = "FR"     
     if country == "DE":
         code = "DE"
     if country == "BE":

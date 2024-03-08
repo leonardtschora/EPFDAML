@@ -30,7 +30,7 @@ results = mu.compute_metrics(predictions, model_wrappers, metrics, real_prices,
                              naive_forecasts)
 dms = mu.compute_pvalues(predictions, model_wrappers, real_prices)
 
-"""
+
 # All version individually
 version = ""
 res_val = mu.plot_scaled_metrics(results, model_wrappers, "validation",
@@ -83,7 +83,7 @@ mu.plot_summary(res_test_recalibrated, res_test_recalibrated_2,
 
 best_metrics =  mu.plot_best_metrics(res_test, res_test_recalibrated, countries,
                                      metrics, model_wrappers, nmw, columns, index)
-"""
+
 ## PValues
 version = "2"
 dataset = "test_recalibrated"

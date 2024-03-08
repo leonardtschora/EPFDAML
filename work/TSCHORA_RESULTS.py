@@ -54,7 +54,7 @@ kwargs = {
     # TASKS
     "GRID_SEARCH" : True,
     "LOAD_AND_TEST" : True,
-    "RECALIBRATE" : True,   
+    "RECALIBRATE" : False,   
 
     # GENERAL PARAMS
     "name" : "TSCHORA",
@@ -62,7 +62,7 @@ kwargs = {
     "base_dataset_name" : "2",
     "n_val" : 362,
     "models" : [MLPWrapper], # [LeNetWrapper, MLPWrapper, MultiSVR, ChainSVR, RFR],    
-    "countries" : ["FR"], # "DE", "BE"],
+    "countries" : ["FRDE"], # "DE", "BE"],
     
     # GRID SEARCH PARAMS
     "fast" : True,
@@ -75,7 +75,7 @@ kwargs = {
     # RECALIBRATION PARAMS
     "n_shap" : 0,
     "start" : 0,
-    "stop" : 2,
+    "stop" : 721,
     "calibration_window" : 1454,
 }
 run(**kwargs)

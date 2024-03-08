@@ -368,8 +368,11 @@ def compute_pvalues(predictions, model_wrappers, real_prices):
                                         norm=1, version='multivariate')
     return dms
 
-def plot_summary(res_1, res_2, res_3):
-    final = res_1.join(res_2, how = "inner").join(res_3, how="inner")
+def plot_summary(res_1, res_2, res_3=None):
+    if res_3 is None:
+        final = res_1.join(res_2, how = "inner")
+    else :
+        final = res_1.join(res_2, how = "inner").join(res_3, how="inner")
     indices = final.index
     countries = np.unique(np.array([c[0] for c in indices]))
     metrics = np.unique(np.array([c[1] for c in indices]))
